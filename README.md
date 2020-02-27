@@ -1,13 +1,4 @@
-# Home Assistant Custom Components</br>![Maintenance](https://img.shields.io/maintenance/no/2019.svg)
 
-**NOT MAINTAINED!**
-
-I'm no longer maintaining this custom components repository!</br>
-That doesn't mean I don't use these components,</br>
-It just means this repository will not be maintained.
-
-Please follow the TOC for further information.</br>
-(you can still use the files :point_up:, if you want)
 
 ## My Custom Components TOC
 - Components(Integrations)
