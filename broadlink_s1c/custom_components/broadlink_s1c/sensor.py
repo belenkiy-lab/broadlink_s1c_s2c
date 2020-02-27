@@ -259,7 +259,9 @@ class WatchSensors(threading.Thread):
                 current_status = self._hub.get_sensors_status()
                 for i, sensor in enumerate(current_status["sensors"]):
                     current_fixed_status = self._conn_obj.parse_status(sensor["type"], str(sensor["status"]))
-                    previous_fixed_status = self._conn_obj.parse_status(old_status["sensors"][i]["type"], str(old_status["sensors"][i]["status"]))
+                    previous_fixed_status = STATE_CLOSED
+                    if not (old_status.get("sensors") != None && old_status.get("sensors").get(i) != None && old_status.get("sensors").get(i).get("status") != None)
+                        previous_fixed_status = self._conn_obj.parse_status(old_status["sensors"][i]["type"], str(old_status["sensors"][i]["status"]))
                     if not (current_fixed_status == previous_fixed_status):
                         _LOGGER.debug("status change tracked from: " + json.dumps(old_status["sensors"][i]))
                         _LOGGER.debug("status change tracked to: " + json.dumps(sensor))
@@ -273,7 +275,7 @@ class WatchSensors(threading.Thread):
 
     def check_loop_run(self):
         """max exceptions allowed in loop before exiting"""
-        max_exceptions_before_stop = 50
+        max_exceptions_before_stop = 500
         """max minutes to remmember the last excption"""
         max_minutes_from_last_exception = 1
         
