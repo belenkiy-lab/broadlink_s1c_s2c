@@ -259,9 +259,11 @@ class WatchSensors(threading.Thread):
                 current_status = self._hub.get_sensors_status()
                 for i, sensor in enumerate(current_status["sensors"]):
                     current_fixed_status = self._conn_obj.parse_status(sensor["type"], str(sensor["status"]))
-                    previous_fixed_status = STATE_CLOSED
-                    if (old_status.get("sensors") != None and len(old_status.get("sensors")) >= i and old_status.get("sensors")[i].get("status") != None):
+                    if old_status.get("sensors") is not None and len(old_status.get("sensors")) >= i and \
+                            old_status.get("sensors")[i].get("status") is not None:
                         previous_fixed_status = self._conn_obj.parse_status(old_status["sensors"][i]["type"], str(old_status["sensors"][i]["status"]))
+                    else:
+                        previous_fixed_status = STATE_CLOSED
                     if not (current_fixed_status == previous_fixed_status):
                         _LOGGER.debug("status change tracked from: " + json.dumps(old_status["sensors"][i]))
                         _LOGGER.debug("status change tracked to: " + json.dumps(sensor))
