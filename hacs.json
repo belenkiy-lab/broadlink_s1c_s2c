@@ -1,0 +1,5 @@
+{
+  "name": "Broadlink s2c and s1c sensors",
+  "render_readme": true,
+  "homeassistant": "0.112.0"
+}
