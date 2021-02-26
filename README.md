@@ -5,13 +5,12 @@ __________________________________________
 **Component Type** : `platform`</br>
 **Platform Name** : `broadlink_s1c`</br>
 **Domain Name** : `sensor`</br>
-**Component Script** : [`custom_components/broadlink_s1c`](custom_components/broadlink_s1c)</br>
 
 [Community Discussion](https://community.home-assistant.io/t/broadlink-s1c-alarm-kit-custom-sensor-component/45980)</br>
 
 #### Component Description
-Home Assistant Custom Component for integration with [Broadlink S1C Alarm Kit](http://www.ibroadlink.com/s1c/).</br>
-S1C Alarm Kit is a alarm system made by Broadlink, it's made of a Hub which can control up to 16 designated devices:
+Home Assistant Custom Component for integration with [Broadlink S1C Alarm Kit] and [Broadlink S2C Alarm Kit].</br>
+S1C And S2C Alarm Kit is a alarm system made by Broadlink, it's made of a Hub which can control up to 16 designated devices:
 - Door/Window Sensor
 - Motion Detector
 - Key Fob
@@ -36,7 +35,7 @@ So, let's get to it! ;-)</br>
 
 ## Requirements
 - **Home Assistant version 0.88.0 or higher**.
-- Your S1C Hub needs to have a **Static IP Address** reserved by your router.
+- Your S1C Hub or S2C Hub needs to have a **Static IP Address** reserved by your router.
 
 ## Installation
 - Copy the files [`custom_components/broadlink_s1c`](custom_components/broadlink_s1c) to your `ha_config_dir/custom_components/broadlink_s1c` directory.
