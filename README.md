@@ -34,7 +34,7 @@ So, let's get to it! ;-)</br>
 - [Credits](#credits)
 
 ## Requirements
-- **Home Assistant version 0.88.0 or higher**.
+- **Home Assistant version 0.112.0 or higher**.
 - Your S1C Hub or S2C Hub needs to have a **Static IP Address** reserved by your router.
 
 ## Installation
@@ -87,6 +87,3 @@ sensor:
 - The custom component used a tweaked version of the *python-broadlink* library from a [forked repository](https://github.com/TomerFi/python-broadlink) of it on my GitHub.
 - Although this component is designed for S1C Hubs, users report it to be working well with S2C Hubs too.
 
-## Credits
-- A script by **NightRang3r**, [here](https://community.home-assistant.io/t/broadlink-s1c-kit-sensors-in-ha-using-python-and-mqtt/19886).
-- The *python-broadlink* library made by **mjg59**, [here](https://github.com/mjg59/python-broadlink).
