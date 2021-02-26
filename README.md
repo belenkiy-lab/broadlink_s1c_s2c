@@ -1,4 +1,4 @@
-# Broadlink S1C and S2C Alarm Kit Sensors
+# Broadlink S1C and S2C Alarm Kit Sensors for Home Assistant
 
 __________________________________________
 
