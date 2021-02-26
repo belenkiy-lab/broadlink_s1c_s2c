@@ -31,7 +31,6 @@ So, let's get to it! ;-)</br>
   - [Motion Detector](#motion-detector)
   - [Key Fob](#key-fob)
 - [Special Notes](#special-notes)
-- [Credits](#credits)
 
 ## Requirements
 - **Home Assistant version 0.112.0 or higher**.
