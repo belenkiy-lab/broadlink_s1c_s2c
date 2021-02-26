@@ -1,0 +1,13 @@
+{
+  "domain": "broadlink_s1c",
+  "name": "Broadlink s1c and s2c",
+  "documentation": "https://github.com/nick2525/home-assistant-custom-components",
+  "requirements": [],
+  "dependencies": [
+    "http"
+  ],
+  "codeowners": [ 
+    "nick25255"
+  ],
+  "version": "1.0.0"
+}
