@@ -39,7 +39,7 @@ So, let's get to it! ;-)</br>
 - Your S1C Hub or S2C Hub needs to have a **Static IP Address** reserved by your router.
 
 ## Installation
-- Copy the files [`custom_components/broadlink_s1c`](custom_components/broadlink_s1c) to your `ha_config_dir/custom_components/broadlink_s1c` directory.
+- Copy the files https://github.com/nick2525/broadlink_s1c_s2c/tree/master/custom_components/ to your `ha_config_dir/custom_components/` directory.
 - Configure like instructed in the Configuration section below.
 - Restart Home-Assistant.
 
