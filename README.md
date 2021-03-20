@@ -84,6 +84,5 @@ sensor:
 - The platform discovers the sensors upon loading, therefore if you add another sensor, restart Home Assistant and the new sensors will be added to ha.
 - The entity name of each sensor is constructed from the original sensor name from the Broadlink App concatenated with the platform name. Spaces and dashes will be replaced with underscores.</br>
   For instance, if you sensor is name *Bedroom Door* the entity name will be *broadlink_s1c_bedroom_door*, and to reference it you will call *sensor.broadlink_s1c_bedroom_door*
-- The custom component used a tweaked version of the *python-broadlink* library from a [forked repository](https://github.com/TomerFi/python-broadlink) of it on my GitHub.
 - Although this component is designed for S1C Hubs, users report it to be working well with S2C Hubs too.
 
