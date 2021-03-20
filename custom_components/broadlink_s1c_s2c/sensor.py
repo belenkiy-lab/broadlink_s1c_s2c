@@ -178,7 +178,7 @@ class HubConnection(object):
             _LOGGER.info("succesfully connected to s1c hub")
             self._initial_data = self._hub.get_sensors_status()
         else:
-            _LOGGER.error("failed to connect s1c hub, not authorized. please fix the problem and restart the system")
+            _LOGGER.error("failed to connect s1c or s2c hub, not authorized. please fix the problem and restart the system")
             self._initial_data = None
 
     def authorize(self, retry=3):
