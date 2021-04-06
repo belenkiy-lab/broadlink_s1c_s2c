@@ -18,6 +18,7 @@ sensor:
     mac: "XX:XX:XX:XX:XX:XX" # set your s1c hub mac address
 
 ////////////////////////////////////////////////////////////////////////////////////////////////"""
+import time
 import binascii
 import socket
 import datetime
@@ -49,6 +50,7 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = 'sensor'
 ENTITY_ID_FORMAT = DOMAIN + '.broadlink_s1c_{}'
 DEFAULT_TIMEOUT = 10
+ERROR_SLEEP_TIME = 10
 
 """additional states that doesn't exists in homeassistant.const"""
 STATE_NO_MOTION = "no_motion"
@@ -276,6 +278,7 @@ class WatchSensors(threading.Thread):
         _LOGGER.info("sensors watch done")
 
     def check_loop_run(self):
+        time.sleep(ERROR_SLEEP_TIME)
         """max exceptions allowed in loop before exiting"""
         max_exceptions_before_stop = 500
         """max minutes to remmember the last excption"""
