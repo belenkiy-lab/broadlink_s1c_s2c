@@ -2,6 +2,8 @@
 
 __________________________________________
 
+After updating to HA 2021.4.0, they updated the library version https://github.com/mjg59/python-broadlink from version 16 to 17, which broke the integration. But I already fixed it, I copied the code of the 16th version of the broadlink into this repository, now it will never break again, since it does not depend on the version of the broadlink library at all
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 **Component Type** : `platform`</br>
 **Platform Name** : `broadlink_s1c`</br>
