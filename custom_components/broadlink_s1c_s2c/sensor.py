@@ -37,6 +37,8 @@ from homeassistant.const import (CONF_IP_ADDRESS, CONF_MAC, CONF_TIMEOUT, STATE_
     EVENT_HOMEASSISTANT_STOP, STATE_ALARM_DISARMED, STATE_ALARM_ARMED_HOME, STATE_ALARM_ARMED_AWAY)
 from homeassistant.util.dt import now
 
+from .alarm import S1C
+
 """current broadlink moudle in ha is of version 0.5 which doesn't supports s1c hubs, usuing version 0.6 from github"""
 # REQUIREMENTS = ['https://github.com/mjg59/python-broadlink/archive/master.zip#broadlink==0.6']
 """one of the broadlink 0.6 requirements is the pycrypto library which is blocked ever since HA 0.64.0, my forked repository of python-broadlink is working with its replacement pycryptodome"""
@@ -172,8 +174,7 @@ class HubConnection(object):
     """s1c hub connection and utility class"""
     def __init__(self, ip_addr, mac_addr, timeout):
         """initialize the connection object"""
-        import broadlinkforked
-        self._hub = broadlinkforked.S1C((ip_addr, 80), mac_addr, None)
+        self._hub = S1C((ip_addr, 80), mac_addr, None)
         self._hub.timeout = timeout
         self._authorized = self.authorize()
         if (self._authorized):
