@@ -2,8 +2,8 @@
 import json
 import struct
 
-from device import device
-from exceptions import check_error
+from .device import device
+from .exceptions import check_error
 
 
 class mp1(device):

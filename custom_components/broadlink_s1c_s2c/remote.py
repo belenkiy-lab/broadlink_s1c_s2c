@@ -1,6 +1,6 @@
 """Support for universal remotes."""
-from device import device
-from exceptions import check_error
+from .device import device
+from .exceptions import check_error
 
 
 class rm(device):

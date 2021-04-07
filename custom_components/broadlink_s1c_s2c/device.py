@@ -9,7 +9,7 @@ from typing import Generator, Tuple, Union
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from exceptions import check_error, exception
+from .exceptions import check_error, exception
 
 HelloResponse = Tuple[int, Tuple[str, int], str, str, bool]
 

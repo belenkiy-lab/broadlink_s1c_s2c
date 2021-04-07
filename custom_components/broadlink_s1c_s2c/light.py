@@ -2,8 +2,8 @@
 import json
 from typing import Union
 
-from device import device
-from exceptions import check_error
+from .device import device
+from .exceptions import check_error
 
 
 class lb1(device):

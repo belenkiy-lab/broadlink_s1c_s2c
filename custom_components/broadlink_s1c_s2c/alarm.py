@@ -1,6 +1,6 @@
 """Support for alarm kits."""
-from device import device
-from exceptions import check_error
+from .device import device
+from .exceptions import check_error
 
 
 class S1C(device):
