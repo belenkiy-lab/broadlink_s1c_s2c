@@ -172,8 +172,8 @@ class HubConnection(object):
     """s1c hub connection and utility class"""
     def __init__(self, ip_addr, mac_addr, timeout):
         """initialize the connection object"""
-        import broadlink
-        self._hub = broadlink.S1C((ip_addr, 80), mac_addr, None)
+        import broadlinkforked
+        self._hub = broadlinkforked.S1C((ip_addr, 80), mac_addr, None)
         self._hub.timeout = timeout
         self._authorized = self.authorize()
         if (self._authorized):
