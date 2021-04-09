@@ -34,10 +34,14 @@ So, let's get to it! ;-)</br>
 - [Special Notes](#special-notes)
 
 ## Requirements
-- **Home Assistant version 0.112.0 or higher**.
+- **Home Assistant
 - Your S1C Hub or S2C Hub needs to have a **Static IP Address** reserved by your router.
 
 ## Installation
+(recomended)
+If you have HACS (Home Assistant Community Store) installed at your HA, just search for broadlink_s1c_s2c and install it direct from HACS. HACS will keep track of updates and you can easly upgrade to the latest version when a new release is available.
+
+(manual installation)
 - Copy the files https://github.com/nick2525/broadlink_s1c_s2c/tree/master/custom_components/ to your `ha_config_dir/custom_components/` directory.
 - Configure like instructed in the Configuration section below.
 - Restart Home-Assistant.
@@ -81,8 +85,8 @@ sensor:
 
 ## Special Notes
 - Initial configuration of the sensor in the Broadlink App is required.
-- The platform discovers the sensors upon loading, therefore if you add another sensor, restart Home Assistant and the new sensors will be added to ha.
+- The platform discovers the sensors upon loading, therefore if you add another sensor, restart Home Assistant and the new sensors will be added to HA.
 - The entity name of each sensor is constructed from the original sensor name from the Broadlink App concatenated with the platform name. Spaces and dashes will be replaced with underscores.</br>
   For instance, if you sensor is name *Bedroom Door* the entity name will be *broadlink_s1c_bedroom_door*, and to reference it you will call *sensor.broadlink_s1c_bedroom_door*
-- Although this component is designed for S1C Hubs, users report it to be working well with S2C Hubs too.
+- Although this component is designed for S1C Hubs, it is working well with S2C Hubs too.
 
