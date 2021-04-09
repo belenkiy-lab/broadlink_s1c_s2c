@@ -36,7 +36,7 @@ from homeassistant.const import (CONF_IP_ADDRESS, CONF_MAC, CONF_TIMEOUT, STATE_
     EVENT_HOMEASSISTANT_STOP, STATE_ALARM_DISARMED, STATE_ALARM_ARMED_HOME, STATE_ALARM_ARMED_AWAY)
 from homeassistant.util.dt import now
 
-from .alarm_f import S1C
+from broadlink import S1C
 
 REQUIREMENTS = []
 
@@ -167,7 +167,7 @@ class HubConnection(object):
     """s1c hub connection and utility class"""
     def __init__(self, ip_addr, mac_addr, timeout):
         """initialize the connection object"""
-        self._hub = S1C((ip_addr, 80), mac_addr, None)
+        self._hub = S1C((ip_addr, 80), mac_addr, 0x2714)
         self._hub.timeout = timeout
         self._authorized = self.authorize()
         if (self._authorized):
