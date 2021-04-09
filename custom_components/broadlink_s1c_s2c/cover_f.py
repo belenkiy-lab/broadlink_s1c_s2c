@@ -1,8 +1,8 @@
 """Support for covers."""
 import time
 
-from .device import device
-from .exceptions import check_error
+from .device_f import device
+from .exceptions_f import check_error
 
 
 class dooya(device):

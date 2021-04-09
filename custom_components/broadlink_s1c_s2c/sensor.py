@@ -36,13 +36,8 @@ from homeassistant.const import (CONF_IP_ADDRESS, CONF_MAC, CONF_TIMEOUT, STATE_
     EVENT_HOMEASSISTANT_STOP, STATE_ALARM_DISARMED, STATE_ALARM_ARMED_HOME, STATE_ALARM_ARMED_AWAY)
 from homeassistant.util.dt import now
 
-from .alarm import S1C
+from .alarm_f import S1C
 
-"""current broadlink moudle in ha is of version 0.5 which doesn't supports s1c hubs, usuing version 0.6 from github"""
-# REQUIREMENTS = ['https://github.com/mjg59/python-broadlink/archive/master.zip#broadlink==0.6']
-"""one of the broadlink 0.6 requirements is the pycrypto library which is blocked ever since HA 0.64.0, my forked repository of python-broadlink is working with its replacement pycryptodome"""
-# REQUIREMENTS = ['https://github.com/TomerFi/python-broadlink/archive/master.zip#broadlink==0.6']
-"""home assistant 0.67.1 is using broadlink 0.8 so there is no need for special requirements"""
 REQUIREMENTS = []
 
 _LOGGER = logging.getLogger(__name__)

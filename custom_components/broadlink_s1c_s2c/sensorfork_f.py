@@ -1,6 +1,6 @@
 """Support for sensors."""
-from .device import device
-from .exceptions import check_error
+from .device_f import device
+from .exceptions_f import check_error
 
 
 class a1(device):
