@@ -39,9 +39,11 @@ So, let's get to it! ;-)</br>
 
 ## Installation
 (recomended)
+
 If you have HACS (Home Assistant Community Store) installed at your HA, just search for broadlink_s1c_s2c and install it direct from HACS. HACS will keep track of updates and you can easly upgrade to the latest version when a new release is available.
 
 (manual installation)
+
 - Copy the files https://github.com/nick2525/broadlink_s1c_s2c/tree/master/custom_components/ to your `ha_config_dir/custom_components/` directory.
 - Configure like instructed in the Configuration section below.
 - Restart Home-Assistant.
