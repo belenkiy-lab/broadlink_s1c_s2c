@@ -203,9 +203,9 @@ class HubConnection(object):
             return STATE_OPEN
         elif sensor_type == SENSOR_TYPE_DOOR_SENSOR and sensor_status == "48":
             return STATE_TAMPERED
-        elif sensor_type == SENSOR_TYPE_MOTION_SENSOR and sensor_status in ("0", "128"):
+        elif sensor_type == SENSOR_TYPE_MOTION_SENSOR and sensor_status in ("0", "64", "128"):
             return STATE_NO_MOTION
-        elif sensor_type == SENSOR_TYPE_MOTION_SENSOR and sensor_status == "16":
+        elif sensor_type == SENSOR_TYPE_MOTION_SENSOR and sensor_status in ("16", "80"):
             return STATE_MOTION_DETECTED
         elif sensor_type == SENSOR_TYPE_MOTION_SENSOR and sensor_status == "32":
             return STATE_TAMPERED
