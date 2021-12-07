@@ -3,6 +3,7 @@
 __________________________________________
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+**Name in HACS** : `Broadlink s2c and s1c sensor`</br>
 **Component Type** : `platform`</br>
 **Platform Name** : `broadlink_s1c`</br>
 **Domain Name** : `sensor`</br>
