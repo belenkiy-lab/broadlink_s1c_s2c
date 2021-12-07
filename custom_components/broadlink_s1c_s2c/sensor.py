@@ -146,7 +146,7 @@ class S1C_SENSOR(Entity):
 
 
     @property
-    def extra_state_attributes(self):
+    def device_state_attributes(self):
         """sensor state attributes"""
         return {
             "sensor_type": self._sensor_type,
