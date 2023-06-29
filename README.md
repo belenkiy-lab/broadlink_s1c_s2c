@@ -2,7 +2,7 @@
 
 __________________________________________
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 **Name in HACS** : `Broadlink s2c and s1c sensor`</br>
 **Component Type** : `platform`</br>
 **Platform Name** : `broadlink_s1c`</br>
@@ -11,8 +11,8 @@ __________________________________________
 [Community Discussion](https://community.home-assistant.io/t/broadlink-s1c-alarm-kit-custom-sensor-component/45980)</br>
 
 #### Update 2023.06
-Update code to work on Home Assistant 2023.6 
-code write by rnsalinero taken from [Community Discussion](https://community.home-assistant.io/t/broadlink-s1c-alarm-kit-custom-sensor-component/45980/214)
+Update code to work on Home Assistant 2023.6 </br>
+Сode write by rnsalinero taken from [Community Discussion](https://community.home-assistant.io/t/broadlink-s1c-alarm-kit-custom-sensor-component/45980/214)
 
 #### Component Description
 Home Assistant Custom Component for integration with [Broadlink S1C Alarm Kit] and [Broadlink S2C Alarm Kit].</br>
