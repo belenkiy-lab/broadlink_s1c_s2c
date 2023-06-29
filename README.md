@@ -49,7 +49,7 @@ If you have HACS (Home Assistant Community Store) installed at your HA, just sea
 
 (manual installation)
 
-- Copy the files https://github.com/nick2525/broadlink_s1c_s2c/tree/master/custom_components/ to your `ha_config_dir/custom_components/` directory.
+- Copy the files https://github.com/belenkiy-lab/broadlink_s1c_s2c/tree/master/custom_components/ to your `ha_config_dir/custom_components/` directory.
 - Configure like instructed in the Configuration section below.
 - Restart Home-Assistant.
 
