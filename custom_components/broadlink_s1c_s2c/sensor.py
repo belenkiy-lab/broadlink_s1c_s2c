@@ -22,7 +22,6 @@ import binascii
 import socket
 import datetime
 import logging
-import asyncio
 import traceback
 import json
 import threading
@@ -32,8 +31,11 @@ import voluptuous as vol
 from homeassistant.helpers.entity import Entity
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (CONF_IP_ADDRESS, CONF_MAC, CONF_TIMEOUT, STATE_UNKNOWN, STATE_OPEN, STATE_CLOSED,
-    EVENT_HOMEASSISTANT_STOP, STATE_ALARM_DISARMED, STATE_ALARM_ARMED_HOME, STATE_ALARM_ARMED_AWAY)
+from homeassistant.const import (
+    CONF_IP_ADDRESS, CONF_MAC, CONF_TIMEOUT, STATE_UNKNOWN, STATE_OPEN,
+    STATE_CLOSED, EVENT_HOMEASSISTANT_STOP, STATE_ALARM_DISARMED,
+    STATE_ALARM_ARMED_HOME, STATE_ALARM_ARMED_AWAY
+)
 from homeassistant.util.dt import now
 
 from broadlink import S1C
@@ -75,9 +77,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 })
 
 """set up broadlink s1c platform"""
-@asyncio.coroutine
-def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
-
+async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     _LOGGER.debug("starting platform setup")
 
     """get configuration params"""
@@ -93,7 +93,15 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     raw_data = conn_obj.get_initial_data()
     sensors = []
     for i, sensor in enumerate(raw_data["sensors"]):
-        sensors.append(S1C_SENSOR(hass, sensor["name"], sensor["type"], conn_obj.parse_status(sensor["type"], str(sensor["status"])), now()))
+        sensors.append(
+            S1C_SENSOR(
+                hass,
+                sensor["name"],
+                sensor["type"],
+                conn_obj.parse_status(sensor["type"], str(sensor["status"])),
+                now()
+            )
+        )
     if sensors:
         async_add_devices(sensors, True)
 
@@ -115,7 +123,7 @@ class S1C_SENSOR(Entity):
         self._last_changed = last_changed
         """registering entity for event listenting"""
         hass.bus.async_listen(UPDATE_EVENT, self.async_event_listener)
-        _LOGGER.debug(self._name + " initiated")
+        _LOGGER.debug(f"{self._name} initiated")
 
     @property
     def name(self):
@@ -144,7 +152,6 @@ class S1C_SENSOR(Entity):
         else:
             return SENSOR_DEFAULT_ICON
 
-
     @property
     def extra_state_attributes(self):
         """sensor state attributes"""
@@ -153,14 +160,13 @@ class S1C_SENSOR(Entity):
             "last_changed": self._last_changed
         }
 
-    @asyncio.coroutine
-    def async_event_listener(self, event):
+    async def async_event_listener(self, event):
         """handling incoming events and update ha state"""
         if (event.data.get(EVENT_PROPERTY_NAME) == self._name):
-            _LOGGER.debug(self._name + " received " + UPDATE_EVENT)
+            _LOGGER.debug(f"{self._name} received {UPDATE_EVENT}")
             self._state = event.data.get(EVENT_PROPERTY_STATE)
             self._last_changed = event.time_fired
-            yield from self.async_update_ha_state()
+            await self.async_write_ha_state()
 
 
 class HubConnection(object):
@@ -174,7 +180,10 @@ class HubConnection(object):
             _LOGGER.info("succesfully connected to s1c hub")
             self._initial_data = self._hub.get_sensors_status()
         else:
-            _LOGGER.error("failed to connect s1c or s2c hub, not authorized. please fix the problem and restart the system")
+            _LOGGER.error(
+                "failed to connect s1c or s2c hub, not authorized. "
+                "please fix the problem and restart the system"
+            )
             self._initial_data = None
 
     def authorize(self, retry=3):
@@ -183,9 +192,7 @@ class HubConnection(object):
             auth = self._hub.auth()
         except socket.timeout:
             auth = False
-        if not auth and retry > 0:
-            return self.authorize(retry-1)
-        return auth
+        return self.authorize(retry-1) if not auth and retry > 0 else auth
 
     def get_initial_data(self):
         """return initial data for discovery"""
@@ -197,7 +204,7 @@ class HubConnection(object):
 
     def parse_status(self, sensor_type, sensor_status):
         """parse sensors status"""
-        if sensor_type == SENSOR_TYPE_DOOR_SENSOR and sensor_status in ("0", "128"):
+        if sensor_type == SENSOR_TYPE_DOOR_SENSOR and sensor_status in ("0","128"):
             return STATE_CLOSED
         elif sensor_type == SENSOR_TYPE_DOOR_SENSOR and sensor_status in ("16", "144"):
             return STATE_OPEN
@@ -218,16 +225,14 @@ class HubConnection(object):
         elif sensor_type == SENSOR_TYPE_KEY_FOB and sensor_status in ("0", "128"):
             return STATE_ALARM_SOS
         else:
-            _LOGGER.debug("unknow status " + sensor_status + "for type " + sensor_type)
+            _LOGGER.debug(f"unknow status {sensor_status}for type {sensor_type}")
             return STATE_UNKNOWN
 
 
 class WatchSensors(threading.Thread):
     """sensor status change watcher class"""
     def __init__(self, hass, conn_obj):
-        
         threading.Thread.__init__(self)
-        
         """initialize the watcher"""
         self._hass = hass
         self._ok_to_run = False
@@ -241,13 +246,11 @@ class WatchSensors(threading.Thread):
     def run(self):
         """register stop function for event listening"""
         self._hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, self.stop)
-        
         """get initial sensors data"""
-        if not (self._conn_obj.get_initial_data() is None):
+        if self._conn_obj.get_initial_data() is not None:
             old_status = self._conn_obj.get_initial_data()
         else:
             old_status = self._hub.get_sensors_status()
-        
         """start watcher loop"""
         _LOGGER.info("starting sensors watch")
         while self._ok_to_run:
@@ -255,18 +258,23 @@ class WatchSensors(threading.Thread):
                 current_status = self._hub.get_sensors_status()
                 for i, sensor in enumerate(current_status["sensors"]):
                     current_fixed_status = self._conn_obj.parse_status(sensor["type"], str(sensor["status"]))
-                    if old_status.get("sensors") is not None and len(old_status.get("sensors")) >= i and \
-                            old_status.get("sensors")[i].get("status") is not None:
+                    if (
+                        old_status.get("sensors") is not None
+                        and len(old_status.get("sensors")) >= i
+                        and old_status.get("sensors")[i].get("status") is not None
+                    ):
                         previous_fixed_status = self._conn_obj.parse_status(old_status["sensors"][i]["type"], str(old_status["sensors"][i]["status"]))
                     else:
                         previous_fixed_status = STATE_CLOSED
-                    if not (current_fixed_status == previous_fixed_status):
+                    if current_fixed_status != previous_fixed_status:
                         _LOGGER.debug("status change tracked from: " + json.dumps(old_status["sensors"][i]))
-                        _LOGGER.debug("status change tracked to: " + json.dumps(sensor))
+                        _LOGGER.debug(f"status change tracked to: {json.dumps(sensor)}")
                         self.launch_state_change_event(sensor["name"], current_fixed_status)
                         old_status = current_status
-            except:
-                _LOGGER.warning("exception while getting sensors status: " + traceback.format_exc())
+            except Exception:
+                _LOGGER.warning(
+                    f"exception while getting sensors status: {traceback.format_exc()}"
+                )
                 self.check_loop_run()
                 continue
         _LOGGER.info("sensors watch done")
@@ -276,7 +284,6 @@ class WatchSensors(threading.Thread):
         max_exceptions_before_stop = 500
         """max minutes to remmember the last excption"""
         max_minutes_from_last_exception = 1
-        
         current_dt = now()
         if not (self._last_exception_dt is None):
             if (self._last_exception_dt.year == current_dt.year and self._last_exception_dt.month == current_dt.month and self._last_exception_dt.day == current_dt.day):
@@ -299,12 +306,12 @@ class WatchSensors(threading.Thread):
 
     def stop(self, event):
         """handle stop request for events"""
-        _LOGGER.debug("received :" + event.event_type)
+        _LOGGER.debug(f"received :{event.event_type}")
         self._ok_to_run = False
 
     def launch_state_change_event(self, name, status):
         """launch events for state changes"""
-        _LOGGER.debug("launching event for " + name + "for state changed to " + status)
+        _LOGGER.debug(f"launching event for {name}for state changed to {status}")
         self._hass.bus.fire(UPDATE_EVENT,
             {
                 EVENT_PROPERTY_NAME: name,

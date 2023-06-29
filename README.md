@@ -10,6 +10,10 @@ __________________________________________
 
 [Community Discussion](https://community.home-assistant.io/t/broadlink-s1c-alarm-kit-custom-sensor-component/45980)</br>
 
+#### Update 2023.06
+Update code to work on Home Assistant 2023.6 
+code write by rnsalinero taken from [Community Discussion](https://community.home-assistant.io/t/broadlink-s1c-alarm-kit-custom-sensor-component/45980/214)
+
 #### Component Description
 Home Assistant Custom Component for integration with [Broadlink S1C Alarm Kit] and [Broadlink S2C Alarm Kit].</br>
 S1C And S2C Alarm Kit is a alarm system made by Broadlink, it's made of a Hub which can control up to 16 designated devices:
