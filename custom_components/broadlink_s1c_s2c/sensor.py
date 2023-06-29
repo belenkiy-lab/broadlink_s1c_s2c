@@ -19,26 +19,23 @@ sensor:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////"""
 import binascii
-import socket
-import datetime
-import logging
-import traceback
 import json
+import logging
+import socket
 import threading
+import traceback
 
-import voluptuous as vol
-
-from homeassistant.helpers.entity import Entity
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_IP_ADDRESS, CONF_MAC, CONF_TIMEOUT, STATE_UNKNOWN, STATE_OPEN,
-    STATE_CLOSED, EVENT_HOMEASSISTANT_STOP, STATE_ALARM_DISARMED,
-    STATE_ALARM_ARMED_HOME, STATE_ALARM_ARMED_AWAY
-)
-from homeassistant.util.dt import now
-
+import voluptuous as vol
 from broadlink import S1C
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import (CONF_IP_ADDRESS, CONF_MAC, CONF_TIMEOUT,
+                                 EVENT_HOMEASSISTANT_STOP,
+                                 STATE_ALARM_ARMED_AWAY,
+                                 STATE_ALARM_ARMED_HOME, STATE_ALARM_DISARMED,
+                                 STATE_CLOSED, STATE_OPEN, STATE_UNKNOWN)
+from homeassistant.helpers.entity import Entity
+from homeassistant.util.dt import now
 
 REQUIREMENTS = []
 
@@ -77,7 +74,11 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 })
 
 """set up broadlink s1c platform"""
-async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
+
+
+async def async_setup_platform(
+    hass, config, async_add_devices, discovery_info=None
+):
     _LOGGER.debug("starting platform setup")
 
     """get configuration params"""
@@ -91,18 +92,16 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
 
     """discovering the sensors and initiating entities"""
     raw_data = conn_obj.get_initial_data()
-    sensors = []
-    for i, sensor in enumerate(raw_data["sensors"]):
-        sensors.append(
-            S1C_SENSOR(
-                hass,
-                sensor["name"],
-                sensor["type"],
-                conn_obj.parse_status(sensor["type"], str(sensor["status"])),
-                now()
-            )
+    if sensors := [
+        S1cSensor(
+            hass,
+            sensor["name"],
+            sensor["type"],
+            conn_obj.parse_status(sensor["type"], str(sensor["status"])),
+            now(),
         )
-    if sensors:
+        for sensor in raw_data["sensors"]
+    ]:
         async_add_devices(sensors, True)
 
     """starting the sensors status change watcher"""
@@ -111,11 +110,13 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
     return True
 
 
-class S1C_SENSOR(Entity):
+class S1cSensor(Entity):
     """representation of the sensor entity"""
+
     def __init__(self, hass, name, sensor_type, status, last_changed):
         """initialize the sensor entity"""
-        self.entity_id = ENTITY_ID_FORMAT.format(name.replace(' ', '_').replace('-', '_').lower())
+        self.entity_id = ENTITY_ID_FORMAT.format(
+            name.replace(' ', '_').replace('-', '_').lower())
         self._hass = hass
         self._name = name
         self._sensor_type = sensor_type
@@ -145,12 +146,11 @@ class S1C_SENSOR(Entity):
         """sensor icon"""
         if (self._sensor_type == SENSOR_TYPE_DOOR_SENSOR):
             return SENSOR_TYPE_DOOR_SENSOR_ICON
-        elif (self._sensor_type == SENSOR_TYPE_KEY_FOB):
+        if (self._sensor_type == SENSOR_TYPE_KEY_FOB):
             return SENSOR_TYPE_KEY_FOB_ICON
-        elif (self._sensor_type == SENSOR_TYPE_MOTION_SENSOR):
+        if (self._sensor_type == SENSOR_TYPE_MOTION_SENSOR):
             return SENSOR_TYPE_MOTION_SENSOR_ICON
-        else:
-            return SENSOR_DEFAULT_ICON
+        return SENSOR_DEFAULT_ICON
 
     @property
     def extra_state_attributes(self):
@@ -171,6 +171,7 @@ class S1C_SENSOR(Entity):
 
 class HubConnection(object):
     """s1c hub connection and utility class"""
+
     def __init__(self, ip_addr, mac_addr, timeout):
         """initialize the connection object"""
         self._hub = S1C((ip_addr, 80), mac_addr, 0x2714)
@@ -204,33 +205,36 @@ class HubConnection(object):
 
     def parse_status(self, sensor_type, sensor_status):
         """parse sensors status"""
-        if sensor_type == SENSOR_TYPE_DOOR_SENSOR and sensor_status in ("0","128"):
-            return STATE_CLOSED
-        elif sensor_type == SENSOR_TYPE_DOOR_SENSOR and sensor_status in ("16", "144"):
-            return STATE_OPEN
-        elif sensor_type == SENSOR_TYPE_DOOR_SENSOR and sensor_status == "48":
-            return STATE_TAMPERED
-        elif sensor_type == SENSOR_TYPE_MOTION_SENSOR and sensor_status in ("0", "64", "128"):
-            return STATE_NO_MOTION
-        elif sensor_type == SENSOR_TYPE_MOTION_SENSOR and sensor_status in ("16", "80"):
-            return STATE_MOTION_DETECTED
-        elif sensor_type == SENSOR_TYPE_MOTION_SENSOR and sensor_status == "32":
-            return STATE_TAMPERED
-        elif sensor_type == SENSOR_TYPE_KEY_FOB and sensor_status == "16":
-            return STATE_ALARM_DISARMED
-        elif sensor_type == SENSOR_TYPE_KEY_FOB and sensor_status == "32":
-            return STATE_ALARM_ARMED_AWAY
-        elif sensor_type == SENSOR_TYPE_KEY_FOB and sensor_status == "64":
-            return STATE_ALARM_ARMED_HOME
-        elif sensor_type == SENSOR_TYPE_KEY_FOB and sensor_status in ("0", "128"):
-            return STATE_ALARM_SOS
-        else:
-            _LOGGER.debug(f"unknow status {sensor_status}for type {sensor_type}")
-            return STATE_UNKNOWN
+        if sensor_type == SENSOR_TYPE_DOOR_SENSOR:
+            if sensor_status in ("0", "128"):
+                return STATE_CLOSED
+            if sensor_status in ("16", "144"):
+                return STATE_OPEN
+            if sensor_status == "48":
+                return STATE_TAMPERED
+        if sensor_type == SENSOR_TYPE_MOTION_SENSOR:
+            if sensor_status in ("0", "64", "128"):
+                return STATE_NO_MOTION
+            if sensor_status in ("16", "80"):
+                return STATE_MOTION_DETECTED
+            if sensor_status == "32":
+                return STATE_TAMPERED
+        if sensor_type == SENSOR_TYPE_KEY_FOB:
+            if sensor_status == "16":
+                return STATE_ALARM_DISARMED
+            if sensor_status == "32":
+                return STATE_ALARM_ARMED_AWAY
+            if sensor_status == "64":
+                return STATE_ALARM_ARMED_HOME
+            if sensor_status in ("0", "128"):
+                return STATE_ALARM_SOS
+        _LOGGER.debug(f"unknow status {sensor_status}for type {sensor_type}")
+        return STATE_UNKNOWN
 
 
 class WatchSensors(threading.Thread):
     """sensor status change watcher class"""
+
     def __init__(self, hass, conn_obj):
         threading.Thread.__init__(self)
         """initialize the watcher"""
@@ -257,23 +261,31 @@ class WatchSensors(threading.Thread):
             try:
                 current_status = self._hub.get_sensors_status()
                 for i, sensor in enumerate(current_status["sensors"]):
-                    current_fixed_status = self._conn_obj.parse_status(sensor["type"], str(sensor["status"]))
+                    current_fixed_status = self._conn_obj.parse_status(
+                        sensor["type"], str(sensor["status"]))
                     if (
                         old_status.get("sensors") is not None
                         and len(old_status.get("sensors")) >= i
                         and old_status.get("sensors")[i].get("status") is not None
                     ):
-                        previous_fixed_status = self._conn_obj.parse_status(old_status["sensors"][i]["type"], str(old_status["sensors"][i]["status"]))
+                        previous_fixed_status = self._conn_obj.parse_status(
+                            old_status["sensors"][i]["type"],
+                            str(old_status["sensors"][i]["status"])
+                        )
                     else:
                         previous_fixed_status = STATE_CLOSED
                     if current_fixed_status != previous_fixed_status:
-                        _LOGGER.debug("status change tracked from: " + json.dumps(old_status["sensors"][i]))
-                        _LOGGER.debug(f"status change tracked to: {json.dumps(sensor)}")
-                        self.launch_state_change_event(sensor["name"], current_fixed_status)
+                        _LOGGER.debug("status change tracked from: " +
+                                      json.dumps(old_status["sensors"][i]))
+                        _LOGGER.debug(
+                            f"status change tracked to: {json.dumps(sensor)}")
+                        self.launch_state_change_event(
+                            sensor["name"], current_fixed_status)
                         old_status = current_status
             except Exception:
                 _LOGGER.warning(
-                    f"exception while getting sensors status: {traceback.format_exc()}"
+                    f"exception while getting sensors status: "
+                    f"{traceback.format_exc()}"
                 )
                 self.check_loop_run()
                 continue
@@ -283,23 +295,29 @@ class WatchSensors(threading.Thread):
         """max exceptions allowed in loop before exiting"""
         max_exceptions_before_stop = 500
         """max minutes to remmember the last excption"""
-        max_minutes_from_last_exception = 1
         current_dt = now()
-        if not (self._last_exception_dt is None):
-            if (self._last_exception_dt.year == current_dt.year and self._last_exception_dt.month == current_dt.month and self._last_exception_dt.day == current_dt.day):
-                calc_dt = current_dt - self._last_exception_dt
-                diff = divmod(calc_dt.days * 86400 + calc_dt.seconds, 60)
-                if (diff[0] > max_minutes_from_last_exception):
-                    self._exception_count = 0
-                else:
-                    self._exception_count += 1
-            else:
-                self._exception_count = 0
-        else:
+        if self._last_exception_dt is None:
             self._exception_count = 0
 
-        if not (max_exceptions_before_stop > self._exception_count):
-            _LOGGER.error("max exceptions allowed in watch loop exceeded, stoping watch loop")
+        elif (
+            self._last_exception_dt.year == current_dt.year and
+            self._last_exception_dt.month == current_dt.month and
+            self._last_exception_dt.day == current_dt.day
+        ):
+            calc_dt = current_dt - self._last_exception_dt
+            diff = divmod(calc_dt.days * 86400 + calc_dt.seconds, 60)
+            max_minutes_from_last_exception = 1
+            if (diff[0] > max_minutes_from_last_exception):
+                self._exception_count = 0
+            else:
+                self._exception_count += 1
+        else:
+            self._exception_count = 0
+        if max_exceptions_before_stop <= self._exception_count:
+            _LOGGER.error(
+                "max exceptions allowed in watch loop exceeded, "
+                "stoping watch loop"
+            )
             self._ok_to_run = False
 
         self._last_exception_dt = current_dt
@@ -311,9 +329,10 @@ class WatchSensors(threading.Thread):
 
     def launch_state_change_event(self, name, status):
         """launch events for state changes"""
-        _LOGGER.debug(f"launching event for {name}for state changed to {status}")
+        _LOGGER.debug(
+            f"launching event for {name}for state changed to {status}")
         self._hass.bus.fire(UPDATE_EVENT,
-            {
-                EVENT_PROPERTY_NAME: name,
-                EVENT_PROPERTY_STATE: status
-            })
+                            {
+                                EVENT_PROPERTY_NAME: name,
+                                EVENT_PROPERTY_STATE: status
+                            })
